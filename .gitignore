@@ -1,0 +1,14 @@
+.env
+# Keep the secret key out of the repository
+
+# --------------------
+# 2. NODE MODULES & LOCKS
+# --------------------
+node_modules
+# Directory where npm installs dependencies
+
+# --------------------
+# 3. LOGS & TEMPORARY FILES
+# --------------------
+npm-debug.log*
+.DS_Store
