@@ -7,9 +7,7 @@ const galleryGrid = document.querySelector(".gallery-grid");
 const modelSelect = document.getElementById("model-select");
 const countSelect = document.getElementById("count-select");
 const ratioSelect = document.getElementById("ratio-select");
-const API_KEY = "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"; 
-// Example prompts
-const examplePrompts = [
+
   "A magic forest with glowing plants and fairy homes among giant mushrooms",
   "An old steampunk airship floating through golden clouds at sunset",
   "A future Mars colony with glass domes and gardens against red mountains",
@@ -65,38 +63,44 @@ const updateImageCard = (index, imageUrl) => {
 };
 // Send requests to Hugging Face API to create images
 const generateImages = async (selectedModel, imageCount, aspectRatio, promptText) => {
-  const MODEL_URL = `https://api-inference.huggingface.co/models/${selectedModel}`;
-  const { width, height } = getImageDimensions(aspectRatio);
-  generateBtn.setAttribute("disabled", "true");
-  // Create an array of image generation promises
-  const imagePromises = Array.from({ length: imageCount }, async (_, i) => {
-    try {
-      // Send request to the AI model API
-      const response = await fetch(MODEL_URL, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${API_KEY}`,
-          "Content-Type": "application/json",
-          "x-use-cache": "false",
-        },
-        body: JSON.stringify({
-          inputs: promptText,
-          parameters: { width, height },
-        }),
-      });
-      if (!response.ok) throw new Error((await response.json())?.error);
-      // Convert response to an image URL and update the image card
-      const blob = await response.blob();
-      updateImageCard(i, URL.createObjectURL(blob));
-    } catch (error) {
-      console.error(error);
-      const imgCard = document.getElementById(`img-card-${i}`);
-      imgCard.classList.replace("loading", "error");
-      imgCard.querySelector(".status-text").textContent = "Generation failed! Check console for more details.";
-    }
-  });
-  await Promise.allSettled(imagePromises);
-  generateBtn.removeAttribute("disabled");
+    // This endpoint must match the route in server.js
+    const SERVER_ENDPOINT = "/api/generate"; 
+    const { width, height } = getImageDimensions(aspectRatio);
+    generateBtn.setAttribute("disabled", "true");
+
+    const imagePromises = Array.from({ length: imageCount }, async (_, i) => {
+        try {
+            // Fetch request goes to your secure backend, not Hugging Face directly
+            const response = await fetch(SERVER_ENDPOINT, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    prompt: promptText,
+                    model: selectedModel,
+                    parameters: { width, height },
+                }),
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Server failed to generate image.");
+            }
+
+            // Server returns the image blob directly on success
+            const blob = await response.blob();
+            updateImageCard(i, URL.createObjectURL(blob));
+            
+        } catch (error) {
+            console.error(error);
+            const imgCard = document.getElementById(`img-card-${i}`);
+            imgCard.classList.replace("loading", "error");
+            imgCard.querySelector(".status-text").textContent = "Generation failed! Check console for more details.";
+        }
+    });
+    await Promise.allSettled(imagePromises);
+    generateBtn.removeAttribute("disabled");
 };
 // Create placeholder cards with loading spinners
 const createImageCards = (selectedModel, imageCount, aspectRatio, promptText) => {
