@@ -8,6 +8,7 @@ const modelSelect = document.getElementById("model-select");
 const countSelect = document.getElementById("count-select");
 const ratioSelect = document.getElementById("ratio-select");
 
+const examplePrompts = [
   "A magic forest with glowing plants and fairy homes among giant mushrooms",
   "An old steampunk airship floating through golden clouds at sunset",
   "A future Mars colony with glass domes and gardens against red mountains",

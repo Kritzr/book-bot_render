@@ -1,19 +1,24 @@
 {
   "name": "book-bot_render",
   "version": "1.0.0",
-  "description": "",
-  "main": "script.js",
+  "description": "Secure image generator backend for Render deployment.",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Kritzr/book-bot_render.git"
   },
-  "keywords": [],
+  "keywords": [
+    "express",
+    "node",
+    "huggingface"
+  ],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/Kritzr/book-bot_render/issues"
   },
@@ -21,6 +26,8 @@
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "cors": "^2.8.5",
+    "path": "^0.12.7" 
   }
 }
